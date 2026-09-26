@@ -23,6 +23,7 @@
 |------|--------|------|
 | diff 공백 오류 | git diff --check | 모든 변경 |
 | 훅 회귀·셸 구문 | bash tests/hooks/run.sh | 훅 관련 변경·완료 검증 (러너가 각 셸 파일을 개별 검사) |
+| bootstrap 공백 경로·기존 설정 치유 | bash tests/bootstrap/run.sh | bootstrap·훅 설정 변경 |
 | 훅 설정 JSON | jq empty .claude/settings.json | 설정 변경 |
 | MCP 설정 JSON | jq empty .mcp.json | 설정 변경 |
 | SessionStart 빈 프로젝트 샘플 | printf '%s' '{}' &#124; INIT_PROJECT_CLAUDE_SETTINGS=/dev/null CLAUDE_PROJECT_DIR=/dev/null bash .claude/hooks/session_start.sh | CML 미등록 조건에서 종료 0, 출력 없음 |
@@ -35,7 +36,7 @@
 - 문서·스킬: 상대 링크와 경로, 필수 프론트매터, 승인 경계 및 AGENTS.md와의 일관성을 확인한다. 테스트 파일을 형식적으로 추가하지 않는다.
 - 훅: 임시 프로젝트의 specs에 context를 만들고 CLAUDE_PROJECT_DIR를 지정해 샘플 stdin JSON으로 직접 실행한다. 활성 기능·완료 기능·빈 프로젝트의 출력과 종료 코드를 확인한다. PostToolUse는 실제 tool_input.file_path 또는 tool_input.command 형태를 사용한다.
 - bootstrap: 임시 소비 프로젝트에서 기본 경로로 실행해 생성 파일·스킬/템플릿 심링크·훅 경로를 확인한다. 재실행하여 기존 문서·설정 보존을 확인한다. 실제 사용자 프로젝트를 검증용으로 변경하지 않는다.
-- 훅 회귀 러너는 tests/hooks/run.sh다. bootstrap 전체 배포 검증은 별도이며, 셸 구문만으로 동작 검증을 통과했다고 하지 않는다.
+- 훅 회귀 러너는 tests/hooks/run.sh, bootstrap 회귀 러너는 tests/bootstrap/run.sh다(공백 포함 경로에서 생성된 훅 명령을 실제로 실행). bootstrap 전체 배포 검증은 별도이며, 셸 구문만으로 동작 검증을 통과했다고 하지 않는다.
 
 ## 명명·문서 컨벤션
 

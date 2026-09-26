@@ -54,9 +54,18 @@ if [ -e specs/_templates ] || [ -L specs/_templates ]; then skipped "specs/_temp
 echo "[4/6] .claude/settings.json (훅을 서브모듈 경로로 와이어링)"
 mkdir -p .claude
 if [ -f .claude/settings.json ]; then
+  # 따옴표 없이 시작하는 ${CLAUDE_PROJECT_DIR} 는 공백 경로(예: C:\Users\WINDOWS USER)에서 쪼개진다 — 기존 파일도 치유
+  sed -E 's#("command"[[:space:]]*:[[:space:]]*")\$\{?CLAUDE_PROJECT_DIR\}?/#\1\\"${CLAUDE_PROJECT_DIR}\\"/#' \
+    .claude/settings.json > .claude/settings.json.tmp
+  if cmp -s .claude/settings.json .claude/settings.json.tmp; then
+    rm .claude/settings.json.tmp
+  else
+    mv .claude/settings.json.tmp .claude/settings.json
+    echo "  ~ .claude/settings.json: 훅 명령의 \${CLAUDE_PROJECT_DIR}를 따옴표로 감쌈 (공백 경로 대응)"
+  fi
   skipped ".claude/settings.json — 훅 병합이 필요하면 $SUB/.claude/settings.json의 경로에 '$SUB/'를 붙여 수동 반영"
 else
-  sed "s#\${CLAUDE_PROJECT_DIR}/.claude/hooks#\${CLAUDE_PROJECT_DIR}/$SUB/.claude/hooks#g" \
+  sed "s#}\\\\\"/.claude/hooks/#}\\\\\"/$SUB/.claude/hooks/#g" \
     "$SUB/.claude/settings.json" > .claude/settings.json
   created ".claude/settings.json"
 fi
