@@ -30,6 +30,6 @@ while IFS= read -r f; do
 done <<< "$files"
 
 if [ "$code_changed" -eq 1 ] && [ "$docs_changed" -eq 0 ]; then
-  jq -n '{hookSpecificOutput:{hookEventName:"PostToolUse",additionalContext:"[SPEC SYNC] 방금 커밋에 코드 변경이 있지만 tasks.md/context.md 갱신이 없습니다. 커밋 규율(문서 갱신 포함) 위반이 아닌지 확인하고, 필요하면 문서를 동기화해 후속 커밋하세요."}}'
+  jq -n '{hookSpecificOutput:{hookEventName:"PostToolUse",additionalContext:"[SPEC SYNC] 방금 커밋에 코드 변경이 있지만 tasks.md/context.md 갱신이 없습니다. 관련 문서에 실제 누락이 있는지 확인하고, 있으면 동기화하세요 (AGENTS.md §2.7)."}}'
 fi
 exit 0

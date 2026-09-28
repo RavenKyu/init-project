@@ -22,5 +22,5 @@ if [ -f "$marker" ] && [ -n "$(find "$marker" -mmin -30 2>/dev/null)" ]; then
 fi
 touch "$marker" 2>/dev/null
 
-jq -n '{hookSpecificOutput:{hookEventName:"PostToolUse",additionalContext:"[SPEC SYNC] 코드가 수정되었습니다. 완료한 작업은 tasks.md에 체크하고, 의미 있는 결정·발견·실패한 접근은 context.md에 기록하세요 (마지막 갱신 날짜 포함)."}}'
+jq -n '{hookSpecificOutput:{hookEventName:"PostToolUse",additionalContext:"[SPEC SYNC] 코드가 수정되었습니다. 완료한 작업은 tasks.md에 체크하고, 의미 있는 결정과 재개에 필요한 미해결 사실은 context.md에 기록하세요 (마지막 갱신 날짜 포함)."}}'
 exit 0
