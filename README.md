@@ -70,7 +70,33 @@ claude plugin marketplace add justinbuzzni/init-project#init-project--v0.1.0 --s
 1. docs/ARCHITECTURE.md·CONVENTIONS.md를 실제 구조·검증 명령으로 채운다.
 2. 훅은 bash와 jq를 사용한다. 두 명령의 가용성을 확인한다.
 3. 공통 정책은 세션 시작 시 주입된다. 도입 표식이 없는 프로젝트에서는 플러그인이 아무것도 출력하지 않는다.
-4. 메모리(claude-memory-layer)는 선택 사항이며 플러그인에 포함되지 않는다. 쓰려면 해당 패키지를 설치·등록한다.
+4. 메모리(claude-memory-layer)는 선택 사항이며 플러그인에 포함되지 않는다. 쓰려면 아래 [메모리 (선택)](#메모리-선택)을 따른다.
+
+### 메모리 (선택)
+
+[claude-memory-layer](https://www.npmjs.com/package/claude-memory-layer)는 프로젝트별 세션 기록·교훈을 저장하고 회수한다. Node.js 20.19 이상이 필요하다.
+
+```bash
+npm install -g claude-memory-layer@latest
+claude-memory-layer install    # Claude Code 훅을 ~/.claude/settings.json에 등록 (한 번만)
+claude-memory-layer import     # 프로젝트 루트에서: 기존 세션 기록 가져오기 (선택)
+claude-memory-layer doctor     # 문제가 있을 때 환경 진단
+```
+
+- 일회성 `npx` 대신 전역 설치를 쓴다. `install`이 훅 파일 경로를 사용자 설정에 저장한다.
+- `install`은 사용자 설정만 수정하므로 로컬 전용 도입과 함께 써도 저장소에 흔적이 없다.
+- CUDA 11이 있는 Linux에서 설치가 실패하면 `ONNXRUNTIME_NODE_INSTALL_CUDA=skip npm install -g claude-memory-layer@latest`로 다시 설치한다.
+- 백그라운드 정리 작업은 기본으로 켜지지 않는다. 필요하면 `claude-memory-layer maintenance install`을 직접 실행한다.
+
+Claude가 `mem-lesson-get`·`mem-context-pack` 같은 메모리 도구를 쓰려면 MCP 서버를 등록한다.
+
+| 쓰는 방식 | 명령 |
+|---|---|
+| 혼자, 모든 프로젝트 | `claude mcp add claude-memory-layer -s user -- claude-memory-layer-mcp` |
+| 혼자, 이 프로젝트만 (저장소에 흔적 없음) | `claude mcp add claude-memory-layer -s local -- claude-memory-layer-mcp` |
+| 팀 공유 | [scripts/mcp.json](scripts/mcp.json)을 프로젝트 루트의 `.mcp.json`으로 복사해 커밋 (팀원 모두 패키지 설치 필요) |
+
+init-project의 SessionStart 훅은 `~/.claude/settings.json`에 등록된 claude-memory-layer 버전을 읽는다. 2.4.0 이상이면 `mem-lesson-get`으로 교훈을 먼저 회수하도록 안내하고, 낮으면 업그레이드를 권한다. 설치 후 새 세션부터 적용된다.
 
 ## 서브모듈 방식 (전환 기간만 지원)
 
