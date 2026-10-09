@@ -23,11 +23,12 @@ bootstrap() {
   (cd "$1" && bash init-project/scripts/bootstrap.sh >/dev/null)
 }
 
-# settings.json 의 모든 훅 명령을 Claude Code 처럼 셸로 실행해 종료 0 인지 확인한다.
+# 훅 설정 파일의 모든 명령을 Claude Code 처럼 셸로 실행해 종료 0 인지 확인한다.
+# $1=프로젝트 $2=설정 파일(기본: 프로젝트 settings.json) $3=플러그인 루트(플러그인 hooks.json 일 때)
 assert_hook_commands_run() {
-  local project=$1 event command input
+  local project=$1 settings=${2:-$1/.claude/settings.json} plugin_root=${3:-} event command input
   jq -r '.hooks | to_entries[] | .key as $event | .value[].hooks[] | select(.type == "command") | "\($event)\t\(.command)"' \
-    "$project/.claude/settings.json" > "$TMP/commands"
+    "$settings" > "$TMP/commands"
   [ -s "$TMP/commands" ]
   while IFS=$'\t' read -r event command; do
     case "$event" in
@@ -35,7 +36,7 @@ assert_hook_commands_run() {
       Stop) input="$FIXTURES/stop.json" ;;
       *) input=/dev/null ;;
     esac
-    if ! CLAUDE_PROJECT_DIR="$project" INIT_PROJECT_CLAUDE_SETTINGS=/dev/null INIT_PROJECT_HOOK_TMPDIR="$TMP" \
+    if ! CLAUDE_PROJECT_DIR="$project" CLAUDE_PLUGIN_ROOT="$plugin_root" INIT_PROJECT_CLAUDE_SETTINGS=/dev/null INIT_PROJECT_HOOK_TMPDIR="$TMP" \
       sh -c "$command" < "$input" >/dev/null 2> "$TMP/stderr"; then
       echo "실패: [$event] $command" >&2
       cat "$TMP/stderr" >&2
@@ -44,10 +45,17 @@ assert_hook_commands_run() {
   done < "$TMP/commands"
 }
 
-# 1) 새 소비 프로젝트
+# 1) 새 소비 프로젝트: 플러그인 hooks.json 의 네 훅이 서브모듈 경로로 등록된다
 project=$(new_project fresh)
 bootstrap "$project"
 assert_hook_commands_run "$project"
+[ "$(wc -l < "$TMP/commands")" -eq "$(jq '[.hooks[][].hooks[]] | length' "$ROOT/hooks/hooks.json")" ]
+! grep -q 'CLAUDE_PLUGIN_ROOT' "$project/.claude/settings.json"
+[ ! -e "$project/.claude/skills/setup" ] && [ -L "$project/.claude/skills/feature" ]
+cmp -s "$project/.mcp.json" "$ROOT/scripts/mcp.json"
+
+# 1-1) 플러그인 모드: 공백 경로의 플러그인 루트에서 hooks.json 명령이 실행된다
+assert_hook_commands_run "$project" "$project/init-project/hooks/hooks.json" "$project/init-project"
 
 # 2) 따옴표 없이 생성된 기존 settings.json 은 재실행 시 치유되고, 다른 명령은 그대로 둔다
 project=$(new_project legacy)

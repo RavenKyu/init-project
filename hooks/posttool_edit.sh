@@ -3,6 +3,7 @@
 # 문서(.md, docs/, specs/) 수정이거나 진행 중 기능이 없으면 침묵. 30분에 1회로 스로틀.
 set -uo pipefail
 . "$(dirname "$0")/lib/common.sh" || exit 0
+hooks_enabled || exit 0
 
 input=$(cat)
 file_path=$(printf '%s' "$input" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
@@ -16,7 +17,7 @@ active=$(list_feature_contexts | head -1)
 [ -z "$active" ] && exit 0
 
 session_id=$(printf '%s' "$input" | jq -r '.session_id // "default"' 2>/dev/null)
-marker="${TMPDIR:-/tmp}/claude_spec_sync_${session_id:-default}"
+marker="$HOOK_TMPDIR/claude_spec_sync_${session_id:-default}"
 if [ -f "$marker" ] && [ -n "$(find "$marker" -mmin -30 2>/dev/null)" ]; then
   exit 0
 fi

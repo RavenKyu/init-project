@@ -1,38 +1,46 @@
 # Architecture
 
-> 마지막 갱신: 2026-09-05
+> 마지막 갱신: 2026-10-09
 > 이 파일은 부트스트랩 시 소비 프로젝트에도 복사된다. 아래 스타터 설명은 소비 애플리케이션의 아키텍처가 아니다.
 
 ## 시스템 개요
 
-init-project는 에이전트 지침·스킬·문서 템플릿·리마인더 훅을 배포하는 저장소다.
-애플리케이션 서버·DB·공개 API는 포함하지 않는다. 서브모듈 배포 결정은 [ADR-001](adr/001-submodule-distribution.md)에 있다
-(해당 ADR은 스타터 저장소에 있으며 부트스트랩은 ADR을 복사하지 않는다).
+init-project는 에이전트 지침·스킬·문서 템플릿·리마인더 훅을 Claude Code 플러그인으로 배포하는 저장소다. 저장소 루트가 플러그인이자 마켓플레이스다.
+애플리케이션 서버·DB·공개 API는 포함하지 않는다. 배포 결정은 [ADR-002](adr/002-plugin-distribution.md)에 있다 (서브모듈 방식 [ADR-001](adr/001-submodule-distribution.md)을 대체, 전환 기간 동안 bootstrap 유지).
+ADR은 스타터 저장소에만 있으며 setup·bootstrap은 ADR을 복사하지 않는다.
 
 ## 모듈 구조와 경계 — 스타터 유지보수 시
 
 | 구성 | 책임 | 위치 |
 |------|------|------|
 | 공통 정책 | 자율성·승인·완료 기준 | AGENTS.md |
-| 에이전트 연결 | 공통 정책 참조와 훅 연결 | CLAUDE.md, .claude/settings.json |
-| 선택적 절차 | 계획·인수인계·회고 | .claude/skills/ |
-| 리마인더 | 기능 탐색·편집·커밋 안내 | .claude/hooks/ |
-| 배포 | 기존 파일을 보존하며 문서 복사·심링크·설정 생성 | scripts/bootstrap.sh |
+| 에이전트 연결 | 공통 정책 참조와 훅 연결 | CLAUDE.md, hooks/hooks.json |
+| 플러그인 배포 | 플러그인 매니페스트·마켓플레이스 (저장소 루트가 플러그인) | .claude-plugin/ |
+| 선택적 절차 | 계획·인수인계·회고, 문서 양식 | skills/ (양식은 skills/feature/templates/) |
+| 리마인더 | 기능 탐색·편집·커밋 안내 | hooks/ |
+| 호환 경로 | 기존 서브모듈 소비 프로젝트용 심링크 (전환 기간, ADR-002) | .claude/hooks, .claude/skills/*, specs/_templates |
+| 도입(플러그인) | docs 양식·specs·도입 표식 생성, 로컬 모드는 .git/info/exclude 등록 | skills/setup/ |
+| 배포(서브모듈, 전환 기간) | 기존 파일을 보존하며 문서 복사·심링크·설정 생성 | scripts/bootstrap.sh |
 | 문서 | 프로젝트 사실·진행 상태·양식 | docs/, specs/ |
 
 ## 의존성 방향
 
 - 스킬·템플릿·README·훅 안내는 AGENTS.md의 정책을 사용한다.
 - 훅은 lib/common.sh를 사용해 소비 프로젝트의 specs를 읽는다. 정책 승인 여부를 강제하는 엔진이 아니다.
-- bootstrap은 docs를 복사하고 템플릿·스킬은 심링크, 훅은 경로 참조로 연결한다. 기존 파일은 자동 병합하지 않는다.
+- 플러그인 도입은 setup 스킬이 docs 양식·specs·도입 표식을 만든다. 정책·스킬·훅은 플러그인에서 직접 로드된다.
+- bootstrap(서브모듈, 전환 기간)은 docs를 복사하고 템플릿·스킬은 심링크, 훅은 hooks/hooks.json의 경로를 서브모듈로 바꿔 연결한다. 기존 파일은 자동 병합하지 않는다.
 - 공통 정책 변경 시 스킬·템플릿·훅 문구의 일관성을 검토한다. 훅 변경은 별도의 코드 검증이 필요하다.
+- 플러그인 모드(`CLAUDE_PLUGIN_ROOT` 설정)의 훅은 도입 표식 `specs/.init-project`가 있는 프로젝트에서만 동작한다. 표식은 시작 디렉터리에서 git 루트까지 올라가며 찾는다. 서브모듈 방식은 프로젝트 설정 등록 자체를 도입으로 본다.
+- 플러그인 모드의 SessionStart는 플러그인 루트의 AGENTS.md를 주입한다. 합계가 10,000자를 넘으면 본문 대신 원본 경로를 안내한다. 상태 파일은 `CLAUDE_PLUGIN_DATA`(없으면 TMPDIR)에 둔다.
+- 커밋 리마인더는 활성 context가 git 제외 대상(로컬 모드)이면 침묵한다.
 - SessionStart는 등록된 CML 훅의 package.json을 읽어 안내 방식을 선택한다. Node 실행이나 MCP 질의는 하지 않는다. 설정·버전이 불확실하면 안내만 생략한다.
 - tests/hooks/는 설정과 마커 디렉터리를 주입해 실제 사용자 설정과 격리한다. Stop 리마인더는 세션별 30분 간격으로 제한한다.
 
 ## 데이터 저장소와 스키마
 
-애플리케이션 데이터 저장소는 없다. 메모리 MCP는 선택적 연결이다.
+애플리케이션 데이터 저장소는 없다. 메모리 MCP는 선택적 연결이다. 플러그인 루트의 `.mcp.json`은 플러그인 MCP로 로드되므로 두지 않는다. 서브모듈 방식의 MCP 설정 원본은 scripts/mcp.json이다.
 context.md의 기능·상태·마지막 갱신 프론트매터는 훅이 읽으므로 변경 시 소비 경로를 함께 검토한다.
+도입 표식 `specs/.init-project`(`mode=team` 또는 `mode=local`)는 훅의 동작 여부를 정한다.
 
 ## 소비 프로젝트 작성 영역
 
