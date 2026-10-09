@@ -14,7 +14,7 @@
 
 ## 접근 방식
 
-저장소 루트를 마켓플레이스이자 플러그인(`"source": "."`)으로 만든다. Phase 1 검증에서 루트 배치가 실패하면 `plugin/` 하위 디렉터리로 바꾼다.
+저장소 루트를 마켓플레이스이자 플러그인(`"source": "."`)으로 만든다. Phase 1에서 루트 배치가 validate를 통과함을 확인했다 (경고만 있음, context.md 참조).
 먼저 동작을 바꾸지 않는 파일 이동(structural)을 하고, 그다음 플러그인 등록·훅 동작·setup을 테스트 우선으로 추가한다.
 setup은 스킬이 결정적 스크립트(`skills/setup/setup.sh team|local`)를 호출하는 구조로 만든다. 그래야 bootstrap처럼 임시 프로젝트에서 회귀 테스트할 수 있다.
 스타터 저장소는 자기 훅 등록을 `.claude/settings.json`에서 제거하고 `claude --plugin-dir .`로 개발한다 (R7). 스타터에도 도입 표식을 두고, CLAUDE.md의 `@AGENTS.md` import는 일반 안내 문장으로 바꿔 정책이 중복 주입되지 않게 한다.
@@ -26,7 +26,7 @@ setup은 스킬이 결정적 스크립트(`skills/setup/setup.sh team|local`)를
 
 ## 단계 (Phases)
 
-- [ ] **Phase 1: 플랫폼 검증 (저장소 변경 없음)** → 검증: 스크래치 디렉터리의 시험 플러그인에서 아래 다섯 가지 결과를 context.md에 기록
+- [x] **Phase 1: 플랫폼 검증 (저장소 변경 없음)** → 검증: 스크래치 디렉터리의 시험 플러그인에서 아래 다섯 가지 결과를 context.md에 기록
   - 루트에 CLAUDE.md·`.claude-plugin/plugin.json`·`marketplace.json`(`source: "."`)이 함께 있을 때 `claude plugin validate`가 통과하는지
   - `--plugin-dir`로 SessionStart 훅이 실행되고 `CLAUDE_PLUGIN_ROOT`·`CLAUDE_PLUGIN_DATA`·`CLAUDE_PROJECT_DIR`가 설정되는지
   - 플러그인 스킬에서 같은 디렉터리의 양식 파일을 참조할 수 있는지 (skill base directory 안내)
