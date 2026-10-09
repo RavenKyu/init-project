@@ -1,6 +1,6 @@
 # Conventions
 
-> 마지막 갱신: 2026-09-05
+> 마지막 갱신: 2026-10-09
 > 이 파일은 소비 프로젝트에도 복사된다. 소비 프로젝트에서는 바로 아래 명령 표를 먼저 채우고 사용한다.
 
 ## 소비 프로젝트 명령어 — 도입 시 작성
@@ -21,6 +21,7 @@
 
 | 목적 | 명령어 | 적용 |
 |------|--------|------|
+| 개발 세션 | claude --plugin-dir . | 훅·플러그인 스킬·정책 주입이 필요할 때. 사용자 범위로 init-project를 설치했다면 `claude plugin disable init-project@init-project`로 중복 실행을 막는다 |
 | diff 공백 오류 | git diff --check | 모든 변경 |
 | 훅 회귀·셸 구문 | bash tests/hooks/run.sh | 훅 관련 변경·완료 검증 (러너가 각 셸 파일을 개별 검사) |
 | bootstrap 공백 경로·기존 설정 치유 | bash tests/bootstrap/run.sh | bootstrap·훅 설정 변경 |
@@ -43,6 +44,6 @@
 ## 명명·문서 컨벤션
 
 - 기능 폴더와 스킬 이름은 kebab-case. ADR은 NNN-title.md.
-- 새 기능 문서·ADR은 specs/_templates/의 해당 파일을 복사한다.
+- 새 기능 문서·ADR은 /init-project:feature가 쓰는 양식(skills/feature/templates/)을 복사한다.
 - 상태·체크박스·검증 결과는 실제 작업과 일치시킨다.
 - 공통 승인 정책은 AGENTS.md에만 정의한다. 다른 파일에서는 해당 절을 참조한다.

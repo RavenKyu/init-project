@@ -41,10 +41,10 @@
 
 ## Phase 6: 문서·전환 안내 (R6, R8)
 
-- [ ] T16. feature·handoff·learn 스킬과 양식의 경로 문구를 플러그인 기준으로 수정 (양식은 `${CLAUDE_SKILL_DIR}/templates/`) → 검증: `grep`으로 소비 프로젝트 `specs/_templates/` 전제 문구 없음
-- [ ] T17. AGENTS.md §0 표와 CONVENTIONS.md의 양식·스킬 위치 문구 수정 (경로만, 정책 변경 없음) → 검증: AGENTS.md 길이 8,000자 이하, 정책 문장 diff 없음
-- [ ] T18. README를 플러그인 설치(팀·로컬, 한 줄 설치 `/plugin install init-project --marketplace <owner>/<repo>` 포함)·태그 ref 고정·서브모듈 전환 안내로 개편, bootstrap에 폐지 예고 출력 추가 → 검증: 링크 대조, `bash tests/bootstrap/run.sh`
-- [ ] T19. ARCHITECTURE.md 배포·의존성 방향 갱신 → 검증: 실제 구조와 대조
+- [x] T16. feature·handoff·learn 스킬과 양식의 경로 문구를 플러그인 기준으로 수정 (양식은 `${CLAUDE_SKILL_DIR}/templates/`) → 검증: `grep`으로 소비 프로젝트 `specs/_templates/` 전제 문구 없음
+- [x] T17. AGENTS.md §0 표와 CONVENTIONS.md의 양식·스킬 위치 문구 수정 (경로만, 정책 변경 없음) → 검증: AGENTS.md 길이 8,000자 이하, 정책 문장 diff 없음
+- [x] T18. README를 플러그인 설치(팀·로컬, 한 줄 설치 `/plugin install init-project --marketplace <owner>/<repo>` 포함)·태그 ref 고정·서브모듈 전환 안내로 개편, bootstrap에 폐지 예고 출력 추가 → 검증: 링크 대조, `bash tests/bootstrap/run.sh`
+- [x] T19. ARCHITECTURE.md 배포·의존성 방향 갱신 → 검증: 실제 구조와 대조
 
 ## Phase 7: 종단 검증과 완료 처리
 

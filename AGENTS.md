@@ -12,9 +12,9 @@
 | docs/CONVENTIONS.md | 실제 검증 명령·컨벤션 | 변경·검증 전 |
 | docs/adr/ | 장기 설계 결정과 재검토 조건 | 해당 결정에 영향이 있을 때 |
 | specs/[feature]/ | spec(요구사항), plan(계획), tasks(작업), context(인수인계) | 해당 기능 작업 시 |
-| specs/_templates/ | 기능 문서·ADR 양식 | 대응 문서 생성 시 복사 |
+| /init-project:feature 양식 | 기능 문서·ADR 양식 | 대응 문서 생성 시 복사 |
 | specs/_archive/ | 완료된 기능 기록 | 유사 작업 배경이 필요할 때 |
-| .claude/skills/ | 공통 정책을 사용하는 선택적 절차 | 해당 스킬이 필요할 때 |
+| init-project 스킬 | 공통 정책을 사용하는 선택적 절차 | 해당 스킬이 필요할 때 |
 
 - 정책은 여기에, 실행 명령은 CONVENTIONS.md에, 기능별 판단은 해당 specs에 한 번만 쓴다.
 - README는 설치·탐색 안내다. 스킬·템플릿·훅은 별도의 승인 조건을 추가하지 않는다.

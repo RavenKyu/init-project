@@ -12,6 +12,9 @@ if [ ! -f "$SUB/AGENTS.md" ]; then
   exit 1
 fi
 
+echo "※ 서브모듈 방식은 기존 프로젝트의 전환 기간에만 지원합니다. 새 프로젝트는 플러그인 방식을 쓰세요 (README '도입', ADR-002)."
+echo ""
+
 created() { echo "  + $1"; }
 skipped() { echo "  = $1 (이미 존재, 건너뜀)"; }
 
