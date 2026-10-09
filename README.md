@@ -10,6 +10,7 @@ Claude Code 플러그인으로 에이전트 공통 정책, 기능 문서 양식�
 | 스타터 구조·소비 프로젝트 구조 작성 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | 검증 명령·컨벤션 | [CONVENTIONS.md](docs/CONVENTIONS.md) |
 | 배포 결정 | [ADR-002](docs/adr/002-plugin-distribution.md) (ADR-001 대체) |
+| 버전별 변경 사항 | [CHANGELOG.md](CHANGELOG.md) |
 | 진행 중 기능 | specs/[feature]/ |
 | 문서 양식·완료 기록 | skills/feature/templates/, specs/_archive/ |
 | 계획·인수인계·회고·도입 절차 | skills/ |
