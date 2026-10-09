@@ -20,9 +20,9 @@
 
 ## Phase 3: 플러그인 등록 (R1, R7)
 
-- [ ] T5. `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `hooks/hooks.json`(`"${CLAUDE_PLUGIN_ROOT}"` 따옴표 경로) 추가 → 검증: `claude plugin validate .`, `jq empty`
-- [ ] T6. 스타터 `.claude/settings.json`에서 훅 등록 제거, CONVENTIONS.md에 `claude --plugin-dir .` 개발 명령과 설치본 비활성화 방법 추가 → 검증: `--plugin-dir .` 세션에서 스킬 세 개 표시, 훅 각 1회 실행
-- [ ] T7. tests/bootstrap의 훅 명령 실행 검사를 `hooks/hooks.json` 기준으로도 수행(플러그인 루트 공백 경로 포함) → 검증: `bash tests/bootstrap/run.sh`
+- [x] T5. `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `hooks/hooks.json`(`"${CLAUDE_PLUGIN_ROOT}"` 따옴표 경로) 추가 → 검증: `claude plugin validate .`, `jq empty`
+- [x] T6. 스타터 `.claude/settings.json`에서 훅 등록 제거, CONVENTIONS.md에 `claude --plugin-dir .` 개발 명령과 설치본 비활성화 방법 추가 → 검증: `--plugin-dir .` 세션에서 스킬 세 개 표시, 훅 각 1회 실행
+- [x] T7. tests/bootstrap의 훅 명령 실행 검사를 `hooks/hooks.json` 기준으로도 수행(플러그인 루트 공백 경로 포함) → 검증: `bash tests/bootstrap/run.sh`
 
 ## Phase 4: 훅 동작 변경 (R2, R5, 테스트 우선)
 

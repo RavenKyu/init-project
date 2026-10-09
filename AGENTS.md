@@ -124,7 +124,7 @@
 
 ### 2.7 훅
 
-.claude/settings.json은 세션 시작, 편집, 커밋 후 및 Stop 교훈 리마인더를 연결한다. Stop은 `systemMessage`로 사용자에게만 표시하며 모델 턴을 연장하지 않는다.
+플러그인 hooks/hooks.json(서브모듈 방식은 소비 프로젝트의 .claude/settings.json)은 세션 시작, 편집, 커밋 후 및 Stop 교훈 리마인더를 연결한다. Stop은 `systemMessage`로 사용자에게만 표시하며 모델 턴을 연장하지 않는다.
 훅은 승인 집행기가 아니며 오류도 작업을 차단하지 않도록 설계한다.
 
 - [ACTIVE FEATURES]: 관련 context를 읽고 상태를 보고한 뒤 §2.1에 따라 진행한다.

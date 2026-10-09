@@ -84,7 +84,7 @@ printf '%s' "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("me
 out=$(printf '%s' '{bad json' | CLAUDE_PROJECT_DIR="$project" INIT_PROJECT_HOOK_TMPDIR="$marker_dir" bash "$HOOKS/stop_lesson_reminder.sh")
 [ -z "$out" ]
 
-jq -e '.hooks.Stop[].hooks[] | select(.command | endswith("/stop_lesson_reminder.sh"))' "$ROOT/.claude/settings.json" >/dev/null
+jq -e '.hooks.Stop[].hooks[] | select(.command | endswith("/stop_lesson_reminder.sh"))' "$ROOT/hooks/hooks.json" >/dev/null
 
 # Numeric precedence, prerelease boundary, and invalid package metadata.
 for version in 2.4.0+build 2.4.1-rc.1 2.10.0 3.0.0; do
@@ -149,5 +149,5 @@ out=$(CLAUDE_PROJECT_DIR="$project" INIT_PROJECT_HOOK_TMPDIR="$marker_dir" bash 
 for script in "$HOOKS"/*.sh "$HOOKS"/lib/*.sh "$ROOT/scripts/bootstrap.sh" "$FIXTURES/run.sh"; do
   bash -n "$script"
 done
-jq empty "$ROOT/.claude/settings.json"
+jq empty "$ROOT/hooks/hooks.json"
 echo "hooks: all tests passed ($(uname -s))"

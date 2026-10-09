@@ -1,6 +1,6 @@
 ---
 기능: plugin-distribution
-상태: 진행중(Phase 3)
+상태: 진행중(Phase 4)
 마지막 갱신: 2026-10-09
 ---
 
@@ -8,7 +8,7 @@
 
 ## 현재 상태
 
-사용자가 ADR-002와 Q1~Q3 권장안을 승인했다(2026-10-09). [plan.md](plan.md)·[tasks.md](tasks.md)를 작성했고 Phase 1(T1 플랫폼 검증)과 Phase 2(구조 이동)를 마쳤다. 훅은 `hooks/`, 스킬은 `skills/`, 양식은 `skills/feature/templates/`에 있고 옛 경로는 호환 심링크다. 다음 작업은 T5(플러그인 매니페스트)다.
+사용자가 ADR-002와 Q1~Q3 권장안을 승인했다(2026-10-09). [plan.md](plan.md)·[tasks.md](tasks.md)를 작성했고 Phase 1~3을 마쳤다. 훅은 `hooks/`, 스킬은 `skills/`, 양식은 `skills/feature/templates/`에 있고 옛 경로는 호환 심링크다. 저장소 루트가 플러그인·마켓플레이스이며(`.claude-plugin/`), 훅 원본은 `hooks/hooks.json`이다. 스타터의 `.claude/settings.json`은 삭제했고 개발은 `claude --plugin-dir .`로 한다. 다음 작업은 T8(Phase 4 실패 테스트)이다.
 
 ## 핵심 결정 로그
 
@@ -39,8 +39,8 @@
 
 ## 다음 세션 시작점
 
-1. tasks.md T5: `.claude-plugin/plugin.json`(author·description 포함), `.claude-plugin/marketplace.json`, `hooks/hooks.json` 추가.
-2. T6에서 스타터 `.claude/settings.json` 훅을 제거하면 bootstrap이 그 파일을 원본으로 쓰므로, T7에서 bootstrap의 settings 생성 원본을 `hooks/hooks.json`으로 바꿔야 한다 (T6·T7 같은 커밋).
+1. tasks.md T8: `tests/hooks/run.sh`에 표식 유무·정책 주입·10,000자 한도·AGENTS.md 8,000자 상한 케이스를 먼저 추가해 실패를 확인한다.
+2. T9 구현 시 하위 디렉터리 시작(T1 결과)과 `INIT_PROJECT_HOOK_TMPDIR` 우선순위(테스트 주입 > `CLAUDE_PLUGIN_DATA` > TMPDIR)를 지킨다.
 
 ## 파일 맵
 
@@ -49,11 +49,13 @@
 - `docs/adr/002-plugin-distribution.md` — 배포 모델 결정 (승인됨, ADR-001 대체)
 - `hooks/`, `skills/`, `skills/feature/templates/` — 이동된 원본 (Phase 2)
 - `.claude/hooks`, `.claude/skills/*`, `specs/_templates` — 기존 소비 프로젝트용 호환 심링크
+- `.claude-plugin/plugin.json`, `marketplace.json` — 플러그인·마켓플레이스 매니페스트 (`source: "."`)
+- `hooks/hooks.json` — 훅 등록 원본. bootstrap이 `${CLAUDE_PLUGIN_ROOT}`를 서브모듈 경로로 바꿔 소비 프로젝트 settings.json을 만든다
 - `scripts/bootstrap.sh` — 원본 경로로 링크·훅 경로 생성
 
 ## 검증·승인 상태
 
-- 실행한 검증과 결과: 문서 링크·`git diff --check` 통과. T1 플랫폼 검증 결과는 위 절 참조. Phase 2 이동 전후 `bash tests/hooks/run.sh`·`bash tests/bootstrap/run.sh` 통과, 옛 소비 프로젝트 링크(`init-project/.claude/skills/*`, `specs/_templates`, `.claude/hooks/*.sh`)와 새 bootstrap 링크 해석 수동 확인.
+- 실행한 검증과 결과: 문서 링크·`git diff --check` 통과. T1 플랫폼 검증 결과는 위 절 참조. Phase 2 이동 전후 `bash tests/hooks/run.sh`·`bash tests/bootstrap/run.sh` 통과, 옛 소비 프로젝트 링크(`init-project/.claude/skills/*`, `specs/_templates`, `.claude/hooks/*.sh`)와 새 bootstrap 링크 해석 수동 확인. Phase 3: `claude plugin validate .` 통과(경고는 루트 CLAUDE.md, README 설치 줄), `--plugin-dir .` 세션에서 SessionStart 메시지 1회·플러그인 스킬 3개 로드 확인, 훅·bootstrap 테스트(플러그인 hooks.json 공백 경로 실행 포함) 통과.
 - 미실행 검증과 이유: 훅·플러그인 검증은 코드 변경이 없어 해당 없음.
 - 승인된 범위·근거: plan.md Phase 1~7 (2026-10-09 "권장안대로 승인").
 - 남은 승인 대상·재개 조건: bootstrap·호환 심링크 제거(전환 완료 후 별도), 태그 생성·push(실행 직전 확인).

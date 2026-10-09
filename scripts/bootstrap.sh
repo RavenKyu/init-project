@@ -63,10 +63,11 @@ if [ -f .claude/settings.json ]; then
     mv .claude/settings.json.tmp .claude/settings.json
     echo "  ~ .claude/settings.json: 훅 명령의 \${CLAUDE_PROJECT_DIR}를 따옴표로 감쌈 (공백 경로 대응)"
   fi
-  skipped ".claude/settings.json — 훅 병합이 필요하면 $SUB/.claude/settings.json의 경로에 '$SUB/'를 붙여 수동 반영"
+  skipped ".claude/settings.json — 훅 병합이 필요하면 $SUB/hooks/hooks.json의 \"\${CLAUDE_PLUGIN_ROOT}\"를 \"\${CLAUDE_PROJECT_DIR}\"/$SUB로 바꿔 수동 반영"
 else
-  sed "s#}\\\\\"/.claude/hooks/#}\\\\\"/$SUB/hooks/#g" \
-    "$SUB/.claude/settings.json" > .claude/settings.json
+  # 플러그인 훅 정의(hooks/hooks.json)가 원본이다. 플러그인 루트를 서브모듈 경로로 바꾼다.
+  sed 's#\${CLAUDE_PLUGIN_ROOT}\\"/hooks/#${CLAUDE_PROJECT_DIR}\\"/'"$SUB"'/hooks/#g' \
+    "$SUB/hooks/hooks.json" > .claude/settings.json
   created ".claude/settings.json"
 fi
 

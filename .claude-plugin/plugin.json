@@ -1,0 +1,7 @@
+{
+  "name": "init-project",
+  "version": "0.1.0",
+  "description": "에이전트 공통 정책 주입, 기능 문서 스킬(/feature·/handoff·/learn), 문서 동기화 리마인더 훅",
+  "author": { "name": "justinbuzzni" },
+  "repository": "https://github.com/justinbuzzni/init-project"
+}

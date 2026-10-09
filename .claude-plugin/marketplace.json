@@ -1,0 +1,12 @@
+{
+  "name": "init-project",
+  "owner": { "name": "justinbuzzni" },
+  "description": "init-project 스타터 플러그인 마켓플레이스",
+  "plugins": [
+    {
+      "name": "init-project",
+      "source": ".",
+      "description": "에이전트 공통 정책 주입, 기능 문서 스킬, 문서 동기화 리마인더 훅"
+    }
+  ]
+}
