@@ -83,7 +83,7 @@ done
 
 echo "[6/6] MCP 등록 · .gitignore"
 if [ -f .mcp.json ]; then skipped ".mcp.json — claude-memory-layer 항목이 있는지 확인하세요"; else
-  cp "$SUB/.mcp.json" .mcp.json; created ".mcp.json"; fi
+  cp "$SUB/scripts/mcp.json" .mcp.json; created ".mcp.json"; fi
 touch .gitignore
 for line in "memory/" ".DS_Store"; do
   if grep -qxF "$line" .gitignore; then skipped ".gitignore: $line"; else

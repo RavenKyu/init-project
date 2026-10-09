@@ -52,6 +52,7 @@ assert_hook_commands_run "$project"
 [ "$(wc -l < "$TMP/commands")" -eq "$(jq '[.hooks[][].hooks[]] | length' "$ROOT/hooks/hooks.json")" ]
 ! grep -q 'CLAUDE_PLUGIN_ROOT' "$project/.claude/settings.json"
 [ ! -e "$project/.claude/skills/setup" ] && [ -L "$project/.claude/skills/feature" ]
+cmp -s "$project/.mcp.json" "$ROOT/scripts/mcp.json"
 
 # 1-1) 플러그인 모드: 공백 경로의 플러그인 루트에서 hooks.json 명령이 실행된다
 assert_hook_commands_run "$project" "$project/init-project/hooks/hooks.json" "$project/init-project"

@@ -37,7 +37,7 @@
 - [x] T13. 실패 테스트 `tests/setup/run.sh` 작성: 팀 모드 생성물과 기존 파일 보존, 로컬 모드 `.git/info/exclude` 등록과 `git status` 깨끗함, `.gitignore`·settings 미수정, 재실행 멱등 → 검증: 실패 확인
 - [x] T14. `skills/setup/setup.sh team|local`과 소비 프로젝트용 ARCHITECTURE·CONVENTIONS 양식(`skills/setup/templates/`) 구현. 로컬 모드는 전역 exclude가 없는 환경에 대비해 `.claude/settings.local.json`도 `.git/info/exclude`에 등록 → 검증: `bash tests/setup/run.sh`
 - [x] T15. `skills/setup/SKILL.md` 작성: 모드 확인(설치 scope와 일치), 스크립트 실행, 결과 보고 → 검증: `--plugin-dir .`로 임시 프로젝트에서 `/init-project:setup` 실행
-- [ ] T15a. (T15에서 발견) 루트 `.mcp.json`이 플러그인 MCP로 로드되어 미설치 환경에서 연결 실패 → bootstrap 전용 자산(`scripts/mcp.json`)으로 이동. `plugin.json`의 `mcpServers: {}`로는 억제되지 않음 → 검증: `claude --plugin-dir . mcp list`에 플러그인 MCP 없음, `bash tests/bootstrap/run.sh`
+- [x] T15a. (T15에서 발견) 루트 `.mcp.json`이 플러그인 MCP로 로드되어 미설치 환경에서 연결 실패 → bootstrap 전용 자산(`scripts/mcp.json`)으로 이동. `plugin.json`의 `mcpServers: {}`로는 억제되지 않음 → 검증: `claude --plugin-dir . mcp list`에 플러그인 MCP 없음, `bash tests/bootstrap/run.sh`
 
 ## Phase 6: 문서·전환 안내 (R6, R8)
 

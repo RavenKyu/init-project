@@ -27,7 +27,7 @@
 | setup 팀·로컬 모드 | bash tests/setup/run.sh | skills/setup 변경 |
 | 훅·플러그인 설정 JSON | jq empty hooks/hooks.json .claude-plugin/plugin.json .claude-plugin/marketplace.json | 설정 변경 |
 | 플러그인 매니페스트 | claude plugin validate . | 매니페스트·스킬·훅 등록 변경 (CLAUDE.md·README 경고는 알려진 경고) |
-| MCP 설정 JSON | jq empty .mcp.json | 설정 변경 |
+| MCP 설정 JSON (bootstrap 복사 원본) | jq empty scripts/mcp.json | 설정 변경 |
 | SessionStart 빈 프로젝트 샘플 | printf '%s' '{}' &#124; INIT_PROJECT_CLAUDE_SETTINGS=/dev/null CLAUDE_PROJECT_DIR=/dev/null bash hooks/session_start.sh | CML 미등록 조건에서 종료 0, 출력 없음 |
 | 애플리케이션 테스트·타입·빌드 | 해당 없음 | 이 저장소는 문서·셸 스타터 |
 
