@@ -148,7 +148,7 @@ printf '%s\n' '---' '상태: 완료' '---' > "$project/specs/demo/context.md"
 out=$(CLAUDE_PROJECT_DIR="$project" INIT_PROJECT_HOOK_TMPDIR="$marker_dir" bash "$HOOKS/stop_lesson_reminder.sh" < "$TMP/another.json")
 [ -z "$out" ]
 
-# --- 플러그인 모드 (specs/plugin-distribution R2·R5) ---------------------------------
+# --- 플러그인 모드 (specs/_archive/plugin-distribution R2·R5) ---------------------------------
 policy_len() { printf '%s' "$1" | jq -r '.hookSpecificOutput.additionalContext | length'; }
 
 # 공통 정책은 주입 한도(10,000자) 안에 여유를 두어야 한다 (ADR-002 재검토 조건: 8,000자).

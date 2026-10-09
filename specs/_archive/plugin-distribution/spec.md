@@ -32,7 +32,7 @@ Claude Code 사용자가 서브모듈·bootstrap 없이 마켓플레이스 플�
 - 크기: SessionStart `additionalContext`는 10,000자를 넘으면 미리보기 2,000자만 들어간다. 현재 AGENTS.md는 6,899자다.
 - 경로: `${CLAUDE_PLUGIN_ROOT}`는 업데이트마다 바뀌므로 상태 파일은 `${CLAUDE_PLUGIN_DATA}`(없으면 TMPDIR)에 둔다. 셸 형식 훅 명령은 경로를 따옴표로 감싼다.
 - 테스트 격리: 훅 테스트는 실제 사용자 설정·플러그인 데이터를 읽거나 쓰지 않는다.
-- 승인: 배포 모델 변경은 AGENTS.md §1.2 대상이다. [ADR-002](../../docs/adr/002-plugin-distribution.md)는 2026-10-09 승인됐다.
+- 승인: 배포 모델 변경은 AGENTS.md §1.2 대상이다. [ADR-002](../../../docs/adr/002-plugin-distribution.md)는 2026-10-09 승인됐다.
 
 ## 결정된 질문 (2026-10-09 사용자 승인: 권장안)
 
@@ -42,7 +42,7 @@ Claude Code 사용자가 서브모듈·bootstrap 없이 마켓플레이스 플�
 
 ## 완료 기준 (Definition of Done)
 
-- [ ] R1~R8에 대응하는 검증 완료 (훅은 tests/hooks 샘플 입력, 플러그인은 `claude plugin validate`와 임시 프로젝트 설치 확인)
-- [ ] `bash tests/hooks/run.sh`, `git diff --check`, 설정 JSON `jq empty` 통과
-- [ ] README·ARCHITECTURE.md·CONVENTIONS.md 갱신, ADR-002 승인 및 ADR-001 상태를 대체됨으로 갱신
-- [ ] R4 로컬 모드에서 임시 git 저장소의 `git status`가 깨끗함을 확인
+- [x] R1~R8에 대응하는 검증 완료 (훅은 tests/hooks 샘플 입력, 플러그인은 `claude plugin validate`와 임시 프로젝트 설치 확인)
+- [x] `bash tests/hooks/run.sh`, `git diff --check`, 설정 JSON `jq empty` 통과
+- [x] README·ARCHITECTURE.md·CONVENTIONS.md 갱신, ADR-002 승인 및 ADR-001 상태를 대체됨으로 갱신
+- [x] R4 로컬 모드에서 임시 git 저장소의 `git status`가 깨끗함을 확인

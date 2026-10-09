@@ -2,7 +2,7 @@
 
 - 날짜: 2026-10-09
 - 상태: 승인됨 (2026-10-09, ADR-001을 대체)
-- 관련 기능: specs/plugin-distribution/
+- 관련 기능: specs/_archive/plugin-distribution/
 
 ## Context
 
@@ -17,7 +17,7 @@ Claude Code 플러그인으로 배포하고, 이 저장소를 마켓플레이스
 - 플러그인 루트의 CLAUDE.md는 로드되지 않으므로, 공통 정책은 SessionStart 훅이 `additionalContext`로 주입한다. 주입은 도입 표식이 있는 프로젝트에서만 한다.
 - 프로젝트 상태 문서(docs, specs)는 `/init-project:setup` 스킬이 생성한다. 팀 모드는 커밋 대상으로, 로컬 모드는 `.git/info/exclude`에 등록한다.
 - 팀 공유는 `--scope project`, 개인 로컬은 `--scope local`로 설치한다.
-- 플러그인 경로(저장소 루트 `"."` 또는 하위 디렉터리)는 `claude plugin validate` 결과로 plan에서 확정한다.
+- 플러그인은 저장소 루트(`"source": "."`)에 둔다. 루트의 CLAUDE.md는 validate 경고만 낸다. 루트의 `.mcp.json`은 플러그인 MCP로 로드되므로 두지 않는다.
 - 서브모듈+bootstrap은 기존 소비 프로젝트의 전환 기간 동안만 유지하고 이후 제거한다. 도입 표식은 `specs/.init-project`, 팀 버전 고정은 마켓플레이스 태그 ref로 한다.
 
 ## Alternatives

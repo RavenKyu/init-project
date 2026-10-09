@@ -1,7 +1,7 @@
 # 플러그인 배포 Plan
 
-> 작성일: 2026-10-09 / 상태: 승인됨
-> 근거 문서: [spec.md](./spec.md), [ADR-002](../../docs/adr/002-plugin-distribution.md)
+> 작성일: 2026-10-09 / 상태: 완료
+> 근거 문서: [spec.md](./spec.md), [ADR-002](../../../docs/adr/002-plugin-distribution.md)
 
 ## 아키텍처 영향
 
@@ -37,7 +37,7 @@ setup은 스킬이 결정적 스크립트(`skills/setup/setup.sh team|local`)를
 - [x] **Phase 4: 훅 동작 변경 (테스트 우선)** → 검증: 표식 유무별 SessionStart 출력, 주입 문자열 10,000자 이하, 로컬 모드 커밋 리마인더 미출력, 상태 파일 경로 격리 테스트 통과 (R2, R5)
 - [x] **Phase 5: setup 스킬** → 검증: `tests/setup/run.sh`에서 팀 모드 생성·보존, 로컬 모드 `git status` 깨끗함, 재실행 멱등 (R3, R4)
 - [x] **Phase 6: 문서·전환 안내** → 검증: 상대 링크·경로 대조, AGENTS.md·스킬·양식에 소비 프로젝트 `specs/_templates/`를 전제하는 문구 없음, bootstrap 폐지 예고 출력 (R6, R8)
-- [ ] **Phase 7: 종단 검증과 완료 처리** → 검증: 임시 git 프로젝트에서 팀·로컬 설치 시나리오 수동 확인, 전체 검증 명령 통과, context 완료 처리 후 아카이브
+- [x] **Phase 7: 종단 검증과 완료 처리** → 검증: 임시 git 프로젝트에서 팀·로컬 설치 시나리오 수동 확인, 전체 검증 명령 통과, context 완료 처리 후 아카이브
 
 ## 리스크와 대응
 

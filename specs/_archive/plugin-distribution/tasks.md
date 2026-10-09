@@ -48,10 +48,10 @@
 
 ## Phase 7: 종단 검증과 완료 처리
 
-- [ ] T20. 임시 git 프로젝트 두 개에서 로컬 마켓플레이스로 팀(project scope)·로컬(local scope) 설치 후 setup·세션 시작·커밋 시나리오 확인. 태그 ref 고정은 원격 저장소가 필요해 push 승인 후 확인 → 검증: 결과를 context.md에 기록
-- [ ] T21. 전체 검증(`git diff --check`, `bash tests/hooks/run.sh`, `bash tests/bootstrap/run.sh`, `bash tests/setup/run.sh`, `jq empty`, `claude plugin validate .`) 후 spec 완료 기준 체크, context 완료, `specs/_archive/`로 이동 → 검증: 명령 결과
+- [x] T20. 임시 git 프로젝트 두 개에서 로컬 마켓플레이스로 팀(project scope)·로컬(local scope) 설치 후 setup·세션 시작·커밋 시나리오 확인. 태그 ref 고정은 원격 저장소가 필요해 push 승인 후 확인 → 검증: 결과를 context.md에 기록
+- [x] T21. 전체 검증(`git diff --check`, `bash tests/hooks/run.sh`, `bash tests/bootstrap/run.sh`, `bash tests/setup/run.sh`, `jq empty`, `claude plugin validate .`) 후 spec 완료 기준 체크, context 완료, `specs/_archive/`로 이동 → 검증: 명령 결과
 
 ## 승인 필요한 변경 (해당 시)
 
-- [ ] (보류) bootstrap·호환 심링크 제거 — 알려진 서브모듈 소비 프로젝트의 전환 완료 후 별도 작업
-- [ ] (보류) 마켓플레이스 첫 태그 생성(`claude plugin tag`, 형식 `init-project--v<version>`)·push 및 `owner/repo#<tag>` 고정 확인 — 외부 행위라 실행 직전 사용자 권한 확인
+- [ ] (보류, moai ip-vnke) bootstrap·호환 심링크 제거 — 알려진 서브모듈 소비 프로젝트의 전환 완료 후 별도 작업
+- [ ] (보류, moai ip-ble2) 마켓플레이스 첫 태그 생성(`claude plugin tag`, 형식 `init-project--v<version>`)·push 및 `owner/repo#<tag>` 고정 확인 — 외부 행위라 실행 직전 사용자 권한 확인
