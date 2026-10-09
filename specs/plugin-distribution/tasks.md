@@ -14,9 +14,9 @@
 
 ## Phase 2: 구조 이동 (structural, 한 커밋)
 
-- [ ] T2. (structural) `.claude/hooks/` → `hooks/`, `.claude/skills/<name>/` → `skills/<name>/`, `specs/_templates/` → `skills/feature/templates/` 이동 → 검증: 이동 전후 `bash tests/hooks/run.sh`
-- [ ] T3. (structural) 호환 심링크 `.claude/hooks → ../hooks`, `.claude/skills/<name> → ../../skills/<name>`, `specs/_templates → ../skills/feature/templates` 추가, tests·bootstrap의 원본 경로 갱신 → 검증: `bash tests/bootstrap/run.sh`, 기존 소비 프로젝트 경로(`init-project/.claude/hooks/*.sh`) 실행 확인
-- [ ] T4. (structural) ARCHITECTURE.md 모듈 표의 위치 갱신 → 검증: 경로 대조
+- [x] T2. (structural) `.claude/hooks/` → `hooks/`, `.claude/skills/<name>/` → `skills/<name>/`, `specs/_templates/` → `skills/feature/templates/` 이동 → 검증: 이동 전후 `bash tests/hooks/run.sh`
+- [x] T3. (structural) 호환 심링크 `.claude/hooks → ../hooks`, `.claude/skills/<name> → ../../skills/<name>`, `specs/_templates → ../skills/feature/templates` 추가, tests·bootstrap의 원본 경로 갱신 → 검증: `bash tests/bootstrap/run.sh`, 기존 소비 프로젝트 경로(`init-project/.claude/hooks/*.sh`) 실행 확인
+- [x] T4. (structural) ARCHITECTURE.md 모듈 표의 위치 갱신 → 검증: 경로 대조
 
 ## Phase 3: 플러그인 등록 (R1, R7)
 

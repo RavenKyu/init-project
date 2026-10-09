@@ -32,7 +32,7 @@ setup은 스킬이 결정적 스크립트(`skills/setup/setup.sh team|local`)를
   - 플러그인 스킬에서 같은 디렉터리의 양식 파일을 참조할 수 있는지 (skill base directory 안내)
   - `--scope local` 설치가 `.claude/settings.local.json`만 쓰고 그 파일이 git에 나타나지 않는지
   - 마켓플레이스 태그 ref(`#ref`) 등록이 되는지
-- [ ] **Phase 2: 구조 이동 (structural)** → 검증: 이동 전후 `bash tests/hooks/run.sh`·`bash tests/bootstrap/run.sh` 통과, 기존 서브모듈 경로(호환 심링크) 유지
+- [x] **Phase 2: 구조 이동 (structural)** → 검증: 이동 전후 `bash tests/hooks/run.sh`·`bash tests/bootstrap/run.sh` 통과, 기존 서브모듈 경로(호환 심링크) 유지
 - [ ] **Phase 3: 플러그인 등록** → 검증: `claude plugin validate .` 통과, `--plugin-dir .` 세션에서 스킬 세 개와 훅 네 개가 각 1회 동작 (R1, R7)
 - [ ] **Phase 4: 훅 동작 변경 (테스트 우선)** → 검증: 표식 유무별 SessionStart 출력, 주입 문자열 10,000자 이하, 로컬 모드 커밋 리마인더 미출력, 상태 파일 경로 격리 테스트 통과 (R2, R5)
 - [ ] **Phase 5: setup 스킬** → 검증: `tests/setup/run.sh`에서 팀 모드 생성·보존, 로컬 모드 `git status` 깨끗함, 재실행 멱등 (R3, R4)

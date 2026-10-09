@@ -11,9 +11,9 @@
 | 검증 명령·컨벤션 | [CONVENTIONS.md](docs/CONVENTIONS.md) |
 | 배포 결정 | [ADR-001](docs/adr/001-submodule-distribution.md) |
 | 진행 중 기능 | specs/[feature]/ |
-| 문서 양식·완료 기록 | specs/_templates/, specs/_archive/ |
-| 계획·인수인계·회고 절차 | .claude/skills/ |
-| 훅 연결·구현 | .claude/settings.json, .claude/hooks/ |
+| 문서 양식·완료 기록 | skills/feature/templates/, specs/_archive/ |
+| 계획·인수인계·회고 절차 | skills/ |
+| 훅 연결·구현 | .claude/settings.json, hooks/ |
 
 정책을 바꾸면 스킬·템플릿·훅 안내의 일관성을 함께 검토한다. 실제 중단·승인 기준은 AGENTS.md가 원본이다.
 
@@ -54,9 +54,9 @@ bash init-project/scripts/bootstrap.sh
 
 ## 스킬
 
-- [/feature](.claude/skills/feature/SKILL.md): 기능 계획 문서 준비와 기존 승인 확인.
-- [/handoff](.claude/skills/handoff/SKILL.md): 변경을 보존하며 검증·승인 상태와 재개 지점 기록.
-- [/learn](.claude/skills/learn/SKILL.md): 검증된 교훈 정리와 승인받을 승격안 준비.
+- [/feature](skills/feature/SKILL.md): 기능 계획 문서 준비와 기존 승인 확인.
+- [/handoff](skills/handoff/SKILL.md): 변경을 보존하며 검증·승인 상태와 재개 지점 기록.
+- [/learn](skills/learn/SKILL.md): 검증된 교훈 정리와 승인받을 승격안 준비.
 
 일반 대화에도 공통 정책을 적용한다. 스킬은 선택적인 실행 보조다.
 

@@ -1,6 +1,6 @@
 ---
 기능: plugin-distribution
-상태: 진행중(Phase 2)
+상태: 진행중(Phase 3)
 마지막 갱신: 2026-10-09
 ---
 
@@ -8,7 +8,7 @@
 
 ## 현재 상태
 
-사용자가 ADR-002와 Q1~Q3 권장안을 승인했다(2026-10-09). [plan.md](plan.md)·[tasks.md](tasks.md)를 작성했고 Phase 1(T1 플랫폼 검증)을 마쳤다. 루트 배치를 확정했다. 저장소 코드·훅 변경은 아직 없으며 다음 작업은 T2(구조 이동)다.
+사용자가 ADR-002와 Q1~Q3 권장안을 승인했다(2026-10-09). [plan.md](plan.md)·[tasks.md](tasks.md)를 작성했고 Phase 1(T1 플랫폼 검증)과 Phase 2(구조 이동)를 마쳤다. 훅은 `hooks/`, 스킬은 `skills/`, 양식은 `skills/feature/templates/`에 있고 옛 경로는 호환 심링크다. 다음 작업은 T5(플러그인 매니페스트)다.
 
 ## 핵심 결정 로그
 
@@ -39,19 +39,21 @@
 
 ## 다음 세션 시작점
 
-1. tasks.md T2: `.claude/hooks/` → `hooks/`, `.claude/skills/*` → `skills/`, `specs/_templates/` → `skills/feature/templates/` 이동 (structural, 이동 전후 `bash tests/hooks/run.sh`).
-2. T3 호환 심링크와 함께 한 커밋으로 묶는다.
+1. tasks.md T5: `.claude-plugin/plugin.json`(author·description 포함), `.claude-plugin/marketplace.json`, `hooks/hooks.json` 추가.
+2. T6에서 스타터 `.claude/settings.json` 훅을 제거하면 bootstrap이 그 파일을 원본으로 쓰므로, T7에서 bootstrap의 settings 생성 원본을 `hooks/hooks.json`으로 바꿔야 한다 (T6·T7 같은 커밋).
 
 ## 파일 맵
 
 - `specs/plugin-distribution/spec.md` — 요구사항 R1~R8, 결정된 질문 Q1~Q3
 - `specs/plugin-distribution/plan.md`, `tasks.md` — Phase 1~7, T1~T21
 - `docs/adr/002-plugin-distribution.md` — 배포 모델 결정 (승인됨, ADR-001 대체)
-- `scripts/bootstrap.sh`, `.claude/hooks/`, `.claude/skills/` — 변경 대상 (미착수)
+- `hooks/`, `skills/`, `skills/feature/templates/` — 이동된 원본 (Phase 2)
+- `.claude/hooks`, `.claude/skills/*`, `specs/_templates` — 기존 소비 프로젝트용 호환 심링크
+- `scripts/bootstrap.sh` — 원본 경로로 링크·훅 경로 생성
 
 ## 검증·승인 상태
 
-- 실행한 검증과 결과: 문서 링크·`git diff --check` 통과. T1 플랫폼 검증 결과는 위 절 참조.
+- 실행한 검증과 결과: 문서 링크·`git diff --check` 통과. T1 플랫폼 검증 결과는 위 절 참조. Phase 2 이동 전후 `bash tests/hooks/run.sh`·`bash tests/bootstrap/run.sh` 통과, 옛 소비 프로젝트 링크(`init-project/.claude/skills/*`, `specs/_templates`, `.claude/hooks/*.sh`)와 새 bootstrap 링크 해석 수동 확인.
 - 미실행 검증과 이유: 훅·플러그인 검증은 코드 변경이 없어 해당 없음.
 - 승인된 범위·근거: plan.md Phase 1~7 (2026-10-09 "권장안대로 승인").
 - 남은 승인 대상·재개 조건: bootstrap·호환 심링크 제거(전환 완료 후 별도), 태그 생성·push(실행 직전 확인).

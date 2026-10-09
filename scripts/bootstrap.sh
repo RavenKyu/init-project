@@ -48,8 +48,8 @@ done
 echo "[3/6] specs/ (템플릿은 서브모듈 심링크 — 중앙 업데이트 반영)"
 mkdir -p specs/_archive
 if [ -e specs/_templates ] || [ -L specs/_templates ]; then skipped "specs/_templates"; else
-  ln -s "../$SUB/specs/_templates" specs/_templates
-  created "specs/_templates -> ../$SUB/specs/_templates"; fi
+  ln -s "../$SUB/skills/feature/templates" specs/_templates
+  created "specs/_templates -> ../$SUB/skills/feature/templates"; fi
 
 echo "[4/6] .claude/settings.json (훅을 서브모듈 경로로 와이어링)"
 mkdir -p .claude
@@ -65,18 +65,18 @@ if [ -f .claude/settings.json ]; then
   fi
   skipped ".claude/settings.json — 훅 병합이 필요하면 $SUB/.claude/settings.json의 경로에 '$SUB/'를 붙여 수동 반영"
 else
-  sed "s#}\\\\\"/.claude/hooks/#}\\\\\"/$SUB/.claude/hooks/#g" \
+  sed "s#}\\\\\"/.claude/hooks/#}\\\\\"/$SUB/hooks/#g" \
     "$SUB/.claude/settings.json" > .claude/settings.json
   created ".claude/settings.json"
 fi
 
 echo "[5/6] 스킬 심링크 (/feature, /handoff, /learn)"
 mkdir -p .claude/skills
-for d in "$SUB"/.claude/skills/*/; do
+for d in "$SUB"/skills/*/; do
   name=$(basename "$d")
   if [ -e ".claude/skills/$name" ] || [ -L ".claude/skills/$name" ]; then skipped ".claude/skills/$name"; else
-    ln -s "../../$SUB/.claude/skills/$name" ".claude/skills/$name"
-    created ".claude/skills/$name -> ../../$SUB/.claude/skills/$name"; fi
+    ln -s "../../$SUB/skills/$name" ".claude/skills/$name"
+    created ".claude/skills/$name -> ../../$SUB/skills/$name"; fi
 done
 
 echo "[6/6] MCP 등록 · .gitignore"

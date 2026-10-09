@@ -26,7 +26,7 @@
 | bootstrap 공백 경로·기존 설정 치유 | bash tests/bootstrap/run.sh | bootstrap·훅 설정 변경 |
 | 훅 설정 JSON | jq empty .claude/settings.json | 설정 변경 |
 | MCP 설정 JSON | jq empty .mcp.json | 설정 변경 |
-| SessionStart 빈 프로젝트 샘플 | printf '%s' '{}' &#124; INIT_PROJECT_CLAUDE_SETTINGS=/dev/null CLAUDE_PROJECT_DIR=/dev/null bash .claude/hooks/session_start.sh | CML 미등록 조건에서 종료 0, 출력 없음 |
+| SessionStart 빈 프로젝트 샘플 | printf '%s' '{}' &#124; INIT_PROJECT_CLAUDE_SETTINGS=/dev/null CLAUDE_PROJECT_DIR=/dev/null bash hooks/session_start.sh | CML 미등록 조건에서 종료 0, 출력 없음 |
 | 애플리케이션 테스트·타입·빌드 | 해당 없음 | 이 저장소는 문서·셸 스타터 |
 
 표의 &#124;는 셸 파이프 기호다.

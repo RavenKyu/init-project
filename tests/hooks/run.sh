@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
-HOOKS="$ROOT/.claude/hooks"
+HOOKS="$ROOT/hooks"
 FIXTURES="$ROOT/tests/hooks"
 TMP=$(mktemp -d "${TMPDIR:-/tmp}/init-project-hooks.XXXXXX")
 trap 'rm -r -- "$TMP"' EXIT

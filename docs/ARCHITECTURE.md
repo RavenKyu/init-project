@@ -15,8 +15,9 @@ init-project는 에이전트 지침·스킬·문서 템플릿·리마인더 훅�
 |------|------|------|
 | 공통 정책 | 자율성·승인·완료 기준 | AGENTS.md |
 | 에이전트 연결 | 공통 정책 참조와 훅 연결 | CLAUDE.md, .claude/settings.json |
-| 선택적 절차 | 계획·인수인계·회고 | .claude/skills/ |
-| 리마인더 | 기능 탐색·편집·커밋 안내 | .claude/hooks/ |
+| 선택적 절차 | 계획·인수인계·회고, 문서 양식 | skills/ (양식은 skills/feature/templates/) |
+| 리마인더 | 기능 탐색·편집·커밋 안내 | hooks/ |
+| 호환 경로 | 기존 서브모듈 소비 프로젝트용 심링크 (전환 기간, ADR-002) | .claude/hooks, .claude/skills/*, specs/_templates |
 | 배포 | 기존 파일을 보존하며 문서 복사·심링크·설정 생성 | scripts/bootstrap.sh |
 | 문서 | 프로젝트 사실·진행 상태·양식 | docs/, specs/ |
 
