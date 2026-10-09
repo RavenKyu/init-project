@@ -75,6 +75,7 @@ echo "[5/6] 스킬 심링크 (/feature, /handoff, /learn)"
 mkdir -p .claude/skills
 for d in "$SUB"/skills/*/; do
   name=$(basename "$d")
+  [ "$name" = setup ] && continue  # 플러그인 전용 스킬 (서브모듈 방식은 bootstrap이 대신한다)
   if [ -e ".claude/skills/$name" ] || [ -L ".claude/skills/$name" ]; then skipped ".claude/skills/$name"; else
     ln -s "../../$SUB/skills/$name" ".claude/skills/$name"
     created ".claude/skills/$name -> ../../$SUB/skills/$name"; fi

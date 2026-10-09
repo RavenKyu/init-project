@@ -19,7 +19,8 @@ init-project는 에이전트 지침·스킬·문서 템플릿·리마인더 훅�
 | 선택적 절차 | 계획·인수인계·회고, 문서 양식 | skills/ (양식은 skills/feature/templates/) |
 | 리마인더 | 기능 탐색·편집·커밋 안내 | hooks/ |
 | 호환 경로 | 기존 서브모듈 소비 프로젝트용 심링크 (전환 기간, ADR-002) | .claude/hooks, .claude/skills/*, specs/_templates |
-| 배포 | 기존 파일을 보존하며 문서 복사·심링크·설정 생성 | scripts/bootstrap.sh |
+| 도입(플러그인) | docs 양식·specs·도입 표식 생성, 로컬 모드는 .git/info/exclude 등록 | skills/setup/ |
+| 배포(서브모듈, 전환 기간) | 기존 파일을 보존하며 문서 복사·심링크·설정 생성 | scripts/bootstrap.sh |
 | 문서 | 프로젝트 사실·진행 상태·양식 | docs/, specs/ |
 
 ## 의존성 방향

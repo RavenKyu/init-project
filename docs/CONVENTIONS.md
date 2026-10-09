@@ -24,6 +24,7 @@
 | diff 공백 오류 | git diff --check | 모든 변경 |
 | 훅 회귀·셸 구문 | bash tests/hooks/run.sh | 훅 관련 변경·완료 검증 (러너가 각 셸 파일을 개별 검사) |
 | bootstrap 공백 경로·기존 설정 치유 | bash tests/bootstrap/run.sh | bootstrap·훅 설정 변경 |
+| setup 팀·로컬 모드 | bash tests/setup/run.sh | skills/setup 변경 |
 | 훅·플러그인 설정 JSON | jq empty hooks/hooks.json .claude-plugin/plugin.json .claude-plugin/marketplace.json | 설정 변경 |
 | 플러그인 매니페스트 | claude plugin validate . | 매니페스트·스킬·훅 등록 변경 (CLAUDE.md·README 경고는 알려진 경고) |
 | MCP 설정 JSON | jq empty .mcp.json | 설정 변경 |

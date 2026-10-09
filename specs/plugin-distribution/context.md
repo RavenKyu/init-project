@@ -8,7 +8,7 @@
 
 ## 현재 상태
 
-사용자가 ADR-002와 Q1~Q3 권장안을 승인했다(2026-10-09). [plan.md](plan.md)·[tasks.md](tasks.md)를 작성했고 Phase 1~4를 마쳤다. 훅은 `hooks/`, 스킬은 `skills/`, 양식은 `skills/feature/templates/`에 있고 옛 경로는 호환 심링크다. 저장소 루트가 플러그인·마켓플레이스이며(`.claude-plugin/`), 훅 원본은 `hooks/hooks.json`이다. 스타터의 `.claude/settings.json`은 삭제했고 개발은 `claude --plugin-dir .`로 한다. 플러그인 모드 훅은 도입 표식으로 게이트되고 SessionStart가 AGENTS.md를 주입한다. 스타터 저장소도 표식을 두고 CLAUDE.md의 import를 안내 문장으로 바꿨다. 다음 작업은 T13(setup 실패 테스트)이다.
+사용자가 ADR-002와 Q1~Q3 권장안을 승인했다(2026-10-09). [plan.md](plan.md)·[tasks.md](tasks.md)를 작성했고 Phase 1~4와 Phase 5의 T13~T15를 마쳤다. 훅은 `hooks/`, 스킬은 `skills/`, 양식은 `skills/feature/templates/`에 있고 옛 경로는 호환 심링크다. 저장소 루트가 플러그인·마켓플레이스이며(`.claude-plugin/`), 훅 원본은 `hooks/hooks.json`이다. 스타터의 `.claude/settings.json`은 삭제했고 개발은 `claude --plugin-dir .`로 한다. 플러그인 모드 훅은 도입 표식으로 게이트되고 SessionStart가 AGENTS.md를 주입한다. 스타터 저장소도 표식을 두고 CLAUDE.md의 import를 안내 문장으로 바꿨다. `/init-project:setup`(skills/setup)이 팀·로컬 도입을 처리한다. 다음 작업은 T15a(루트 .mcp.json이 플러그인 MCP로 로드되는 문제)다.
 
 ## 핵심 결정 로그
 
@@ -30,6 +30,7 @@
 
 ## 시도했으나 실패한 접근
 
+- `plugin.json`에 `"mcpServers": {}`를 넣어 루트 `.mcp.json` 로드를 막기 → 효과 없음 (2.1.295). 파일을 플러그인 루트 밖으로 옮겨야 한다.
 - 로컬 git 저장소를 `file://…#v0.1.0`·`경로#v0.1.0`으로 마켓플레이스 등록 → "Invalid marketplace source format"/"Path does not exist". 태그 고정 확인은 원격 저장소로 해야 한다.
 
 ## 발견된 문제 / 열린 질문
@@ -39,8 +40,8 @@
 
 ## 다음 세션 시작점
 
-1. tasks.md T13: `tests/setup/run.sh`를 먼저 작성한다 (팀 모드 생성·보존, 로컬 모드 `.git/info/exclude`와 깨끗한 `git status`, 멱등).
-2. T14 `skills/setup/setup.sh team|local`: 표식 `specs/.init-project`에 `mode=` 기록. 로컬 모드는 생성한 파일·`specs/`·`.claude/settings.local.json`만 exclude에 추가한다. bootstrap의 스킬 링크 루프가 `skills/setup`까지 링크하지 않도록 함께 처리한다.
+1. tasks.md T15a: 루트 `.mcp.json`을 `scripts/mcp.json`으로 옮기고 bootstrap 복사 원본·README·CONVENTIONS를 맞춘다.
+2. 이후 Phase 6 T16(스킬·양식 경로 문구)부터 진행한다.
 
 ## 파일 맵
 
@@ -52,12 +53,13 @@
 - `.claude-plugin/plugin.json`, `marketplace.json` — 플러그인·마켓플레이스 매니페스트 (`source: "."`)
 - `hooks/lib/common.sh` — 플러그인 모드 판별, 표식 상위 탐색(`find_opted_in_root`), `hooks_enabled`, 상태 경로
 - `specs/.init-project` — 스타터 자신의 도입 표식
+- `skills/setup/` — setup 스킬·스크립트·소비 프로젝트 docs 양식, `tests/setup/run.sh` 회귀 테스트
 - `hooks/hooks.json` — 훅 등록 원본. bootstrap이 `${CLAUDE_PLUGIN_ROOT}`를 서브모듈 경로로 바꿔 소비 프로젝트 settings.json을 만든다
 - `scripts/bootstrap.sh` — 원본 경로로 링크·훅 경로 생성
 
 ## 검증·승인 상태
 
-- 실행한 검증과 결과: 문서 링크·`git diff --check` 통과. T1 플랫폼 검증 결과는 위 절 참조. Phase 2 이동 전후 `bash tests/hooks/run.sh`·`bash tests/bootstrap/run.sh` 통과, 옛 소비 프로젝트 링크(`init-project/.claude/skills/*`, `specs/_templates`, `.claude/hooks/*.sh`)와 새 bootstrap 링크 해석 수동 확인. Phase 3: `claude plugin validate .` 통과(경고는 루트 CLAUDE.md, README 설치 줄), `--plugin-dir .` 세션에서 SessionStart 메시지 1회·플러그인 스킬 3개 로드 확인, 훅·bootstrap 테스트(플러그인 hooks.json 공백 경로 실행 포함) 통과. Phase 4: 새 케이스가 먼저 실패함을 확인한 뒤 구현, `bash tests/hooks/run.sh`·`bash tests/bootstrap/run.sh` 통과. `--plugin-dir .` 세션에서 정책 주입 1회·AGENTS.md 본문 1회 확인.
+- 실행한 검증과 결과: 문서 링크·`git diff --check` 통과. T1 플랫폼 검증 결과는 위 절 참조. Phase 2 이동 전후 `bash tests/hooks/run.sh`·`bash tests/bootstrap/run.sh` 통과, 옛 소비 프로젝트 링크(`init-project/.claude/skills/*`, `specs/_templates`, `.claude/hooks/*.sh`)와 새 bootstrap 링크 해석 수동 확인. Phase 3: `claude plugin validate .` 통과(경고는 루트 CLAUDE.md, README 설치 줄), `--plugin-dir .` 세션에서 SessionStart 메시지 1회·플러그인 스킬 3개 로드 확인, 훅·bootstrap 테스트(플러그인 hooks.json 공백 경로 실행 포함) 통과. Phase 4: 새 케이스가 먼저 실패함을 확인한 뒤 구현, `bash tests/hooks/run.sh`·`bash tests/bootstrap/run.sh` 통과. `--plugin-dir .` 세션에서 정책 주입 1회·AGENTS.md 본문 1회 확인. Phase 5: `tests/setup/run.sh` 실패 확인 후 구현·통과, 임시 프로젝트에서 `/init-project:setup` 실행으로 로컬 모드 `git status` 깨끗함 확인.
 - 미실행 검증과 이유: 훅·플러그인 검증은 코드 변경이 없어 해당 없음.
 - 승인된 범위·근거: plan.md Phase 1~7 (2026-10-09 "권장안대로 승인").
 - 남은 승인 대상·재개 조건: bootstrap·호환 심링크 제거(전환 완료 후 별도), 태그 생성·push(실행 직전 확인).
