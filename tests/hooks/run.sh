@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+# 플러그인 실행 환경 변수가 개발자 셸에서 새어 들어오지 않게 한다. 플러그인 모드는 케이스별로 명시한다.
+unset CLAUDE_PLUGIN_ROOT CLAUDE_PLUGIN_DATA
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 HOOKS="$ROOT/hooks"
 FIXTURES="$ROOT/tests/hooks"
@@ -145,6 +147,75 @@ out=$(CLAUDE_PROJECT_DIR="$project" INIT_PROJECT_HOOK_TMPDIR="$TMP/missing-marke
 printf '%s\n' '---' '상태: 완료' '---' > "$project/specs/demo/context.md"
 out=$(CLAUDE_PROJECT_DIR="$project" INIT_PROJECT_HOOK_TMPDIR="$marker_dir" bash "$HOOKS/stop_lesson_reminder.sh" < "$TMP/another.json")
 [ -z "$out" ]
+
+# --- 플러그인 모드 (specs/plugin-distribution R2·R5) ---------------------------------
+policy_len() { printf '%s' "$1" | jq -r '.hookSpecificOutput.additionalContext | length'; }
+
+# 공통 정책은 주입 한도(10,000자) 안에 여유를 두어야 한다 (ADR-002 재검토 조건: 8,000자).
+[ "$(jq -Rs 'length' "$ROOT/AGENTS.md")" -le 8000 ]
+
+plugin_project="$TMP/plugin project"
+mkdir -p "$plugin_project/specs/demo" "$plugin_project/src/deep"
+printf '%s\n' '---' '상태: 진행중(Phase 1)' '---' > "$plugin_project/specs/demo/context.md"
+
+# 표식이 없으면 플러그인 훅은 모두 침묵한다.
+out=$(CLAUDE_PLUGIN_ROOT="$ROOT" CLAUDE_PROJECT_DIR="$plugin_project" INIT_PROJECT_CLAUDE_SETTINGS="$TMP/no-cml.json" bash "$HOOKS/session_start.sh" < "$FIXTURES/session_start.json")
+[ -z "$out" ]
+out=$(CLAUDE_PLUGIN_ROOT="$ROOT" CLAUDE_PROJECT_DIR="$plugin_project" INIT_PROJECT_HOOK_TMPDIR="$marker_dir" bash "$HOOKS/stop_lesson_reminder.sh" < "$TMP/another.json")
+[ -z "$out" ]
+out=$(printf '%s' '{"session_id":"edit-silent","tool_input":{"file_path":"src/app.py"}}' | CLAUDE_PLUGIN_ROOT="$ROOT" CLAUDE_PROJECT_DIR="$plugin_project" INIT_PROJECT_HOOK_TMPDIR="$marker_dir" bash "$HOOKS/posttool_edit.sh")
+[ -z "$out" ]
+
+# 표식이 있으면 정책과 진행 중 기능을 한도 안에서 주입한다.
+printf '%s\n' 'mode=team' > "$plugin_project/specs/.init-project"
+out=$(CLAUDE_PLUGIN_ROOT="$ROOT" CLAUDE_PROJECT_DIR="$plugin_project" INIT_PROJECT_CLAUDE_SETTINGS="$TMP/no-cml.json" bash "$HOOKS/session_start.sh" < "$FIXTURES/session_start.json")
+assert_json_event "$out" SessionStart
+printf '%s' "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("[INIT-PROJECT POLICY]") and contains("## 1. 판단과 품질") and contains("[ACTIVE FEATURES]") and contains("specs/demo/context.md")' >/dev/null
+[ "$(policy_len "$out")" -le 10000 ]
+
+# 하위 디렉터리에서 시작해도 상위의 표식을 찾는다 (Claude Code는 시작 디렉터리를 CLAUDE_PROJECT_DIR로 넘긴다).
+sub_out=$(CLAUDE_PLUGIN_ROOT="$ROOT" CLAUDE_PROJECT_DIR="$plugin_project/src/deep" INIT_PROJECT_CLAUDE_SETTINGS="$TMP/no-cml.json" bash "$HOOKS/session_start.sh" < "$FIXTURES/session_start.json")
+[ "$sub_out" = "$out" ]
+
+# 정책이 한도를 넘으면 본문 대신 원본 경로를 안내한다.
+big_root="$TMP/big plugin"
+mkdir -p "$big_root"
+head -c 12000 /dev/zero | tr '\0' 'x' > "$big_root/AGENTS.md"
+out=$(CLAUDE_PLUGIN_ROOT="$big_root" CLAUDE_PROJECT_DIR="$plugin_project" INIT_PROJECT_CLAUDE_SETTINGS="$TMP/no-cml.json" bash "$HOOKS/session_start.sh" < "$FIXTURES/session_start.json" 2>/dev/null)
+assert_json_event "$out" SessionStart
+printf '%s' "$out" | jq -e --arg path "$big_root/AGENTS.md" '.hookSpecificOutput.additionalContext | contains("[INIT-PROJECT POLICY]") and contains($path) and contains("[ACTIVE FEATURES]")' >/dev/null
+[ "$(policy_len "$out")" -le 10000 ]
+
+# 서브모듈(프로젝트 설정 등록) 모드는 표식 없이 기존처럼 동작하고 정책을 주입하지 않는다.
+rm "$plugin_project/specs/.init-project"
+out=$(CLAUDE_PROJECT_DIR="$plugin_project" INIT_PROJECT_CLAUDE_SETTINGS="$TMP/no-cml.json" bash "$HOOKS/session_start.sh" < "$FIXTURES/session_start.json")
+printf '%s' "$out" | jq -e '.hookSpecificOutput.additionalContext | contains("[ACTIVE FEATURES]") and (contains("[INIT-PROJECT POLICY]") | not)' >/dev/null
+printf '%s\n' 'mode=team' > "$plugin_project/specs/.init-project"
+
+# 상태 파일은 테스트 주입 경로 > CLAUDE_PLUGIN_DATA > TMPDIR 순으로 둔다.
+plugin_data="$TMP/plugin data"
+mkdir -p "$plugin_data"
+out=$(printf '%s' '{"session_id":"edit-session","tool_input":{"file_path":"src/app.py"}}' | CLAUDE_PLUGIN_ROOT="$ROOT" CLAUDE_PLUGIN_DATA="$plugin_data" CLAUDE_PROJECT_DIR="$plugin_project" bash "$HOOKS/posttool_edit.sh")
+assert_json_event "$out" PostToolUse
+[ -e "$plugin_data/claude_spec_sync_edit-session" ]
+out=$(printf '%s' '{"session_id":"edit-injected","tool_input":{"file_path":"src/app.py"}}' | CLAUDE_PLUGIN_ROOT="$ROOT" CLAUDE_PLUGIN_DATA="$plugin_data" CLAUDE_PROJECT_DIR="$plugin_project" INIT_PROJECT_HOOK_TMPDIR="$marker_dir" bash "$HOOKS/posttool_edit.sh")
+assert_json_event "$out" PostToolUse
+[ -e "$marker_dir/claude_spec_sync_edit-injected" ] && [ ! -e "$plugin_data/claude_spec_sync_edit-injected" ]
+
+# 로컬 모드(specs가 git 제외 대상)에서는 커밋 리마인더를 내지 않는다. 추적 중이면 기존처럼 알린다.
+commit_input='{"tool_input":{"command":"git commit -m change"}}'
+git_commit() { git -C "$plugin_project" -c user.name=t -c user.email=t@t commit -qm "$1"; }
+git -C "$plugin_project" init -q
+printf '%s\n' 'specs/' > "$plugin_project/.git/info/exclude"
+echo one > "$plugin_project/src/app.py"; git -C "$plugin_project" add src; git_commit first
+echo two > "$plugin_project/src/app.py"; git -C "$plugin_project" add src; git_commit second
+out=$(printf '%s' "$commit_input" | CLAUDE_PLUGIN_ROOT="$ROOT" CLAUDE_PROJECT_DIR="$plugin_project" bash "$HOOKS/posttool_commit.sh")
+[ -z "$out" ]
+: > "$plugin_project/.git/info/exclude"
+git -C "$plugin_project" add specs; git_commit specs
+echo three > "$plugin_project/src/app.py"; git -C "$plugin_project" add src; git_commit third
+out=$(printf '%s' "$commit_input" | CLAUDE_PLUGIN_ROOT="$ROOT" CLAUDE_PROJECT_DIR="$plugin_project" bash "$HOOKS/posttool_commit.sh")
+assert_json_event "$out" PostToolUse
 
 for script in "$HOOKS"/*.sh "$HOOKS"/lib/*.sh "$ROOT/scripts/bootstrap.sh" "$FIXTURES/run.sh"; do
   bash -n "$script"

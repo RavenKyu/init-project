@@ -26,11 +26,11 @@
 
 ## Phase 4: 훅 동작 변경 (R2, R5, 테스트 우선)
 
-- [ ] T8. 실패 테스트 추가: 표식 없는 프로젝트의 SessionStart 무출력, 표식 있는 프로젝트의 정책 포함 출력, 주입 문자열 10,000자 이하, AGENTS.md 8,000자 초과 시 실패 → 검증: 새 케이스가 실패하는 것 확인
-- [ ] T9. `lib/common.sh`에 프로젝트 루트 탐색(`CLAUDE_PROJECT_DIR`에서 상위로 표식·git 루트 탐색, T1에서 하위 디렉터리 시작 시 그 디렉터리가 전달됨을 확인), 표식 확인과 `HOOK_TMPDIR` 기본값(`CLAUDE_PLUGIN_DATA` → TMPDIR) 추가, 네 훅을 표식으로 게이트, SessionStart에 `${CLAUDE_PLUGIN_ROOT}/AGENTS.md` 주입과 한도 초과 시 경로 안내 대체 → 검증: `bash tests/hooks/run.sh`
-- [ ] T10. `posttool_edit.sh`의 스로틀 마커를 `HOOK_TMPDIR`로 변경 → 검증: 마커가 주입한 임시 디렉터리에만 생기는 테스트
-- [ ] T11. 실패 테스트 후 구현: 활성 context가 git 제외 대상이면 `posttool_commit.sh`가 리마인더를 내지 않음, 추적되는 경우 기존 출력 유지 → 검증: `bash tests/hooks/run.sh`
-- [ ] T12. 스타터 저장소에 `specs/.init-project`(mode=team) 추가, CLAUDE.md의 `@AGENTS.md` import를 개발 안내 문장으로 교체 → 검증: `--plugin-dir .` 세션에서 정책이 한 번만 주입됨
+- [x] T8. 실패 테스트 추가: 표식 없는 프로젝트의 SessionStart 무출력, 표식 있는 프로젝트의 정책 포함 출력, 주입 문자열 10,000자 이하, AGENTS.md 8,000자 초과 시 실패 → 검증: 새 케이스가 실패하는 것 확인
+- [x] T9. `lib/common.sh`에 프로젝트 루트 탐색(`CLAUDE_PROJECT_DIR`에서 상위로 표식·git 루트 탐색, T1에서 하위 디렉터리 시작 시 그 디렉터리가 전달됨을 확인), 표식 확인과 `HOOK_TMPDIR` 기본값(`CLAUDE_PLUGIN_DATA` → TMPDIR) 추가, 네 훅을 표식으로 게이트, SessionStart에 `${CLAUDE_PLUGIN_ROOT}/AGENTS.md` 주입과 한도 초과 시 경로 안내 대체 → 검증: `bash tests/hooks/run.sh`
+- [x] T10. `posttool_edit.sh`의 스로틀 마커를 `HOOK_TMPDIR`로 변경 → 검증: 마커가 주입한 임시 디렉터리에만 생기는 테스트
+- [x] T11. 실패 테스트 후 구현: 활성 context가 git 제외 대상이면 `posttool_commit.sh`가 리마인더를 내지 않음, 추적되는 경우 기존 출력 유지 → 검증: `bash tests/hooks/run.sh`
+- [x] T12. 스타터 저장소에 `specs/.init-project`(mode=team) 추가, CLAUDE.md의 `@AGENTS.md` import를 개발 안내 문장으로 교체 → 검증: `--plugin-dir .` 세션에서 정책이 한 번만 주입됨
 
 ## Phase 5: setup 스킬 (R3, R4)
 

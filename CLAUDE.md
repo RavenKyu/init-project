@@ -1,8 +1,8 @@
 # CLAUDE.md
 
 공통 운영 정책은 AGENTS.md가 원본이다. 이 파일에 복사하지 않는다.
-
-@AGENTS.md
+이 저장소는 init-project 플러그인 자체다. `claude --plugin-dir .`로 실행하면 SessionStart 훅이 AGENTS.md를 주입한다 (도입 표식 specs/.init-project).
+플러그인 없이 실행했다면 작업 전에 AGENTS.md를 직접 읽는다.
 
 ## Claude Code 연결
 
