@@ -12,6 +12,9 @@ if [ ! -f "$SUB/AGENTS.md" ]; then
   exit 1
 fi
 
+echo "※ 서브모듈 방식은 기존 프로젝트의 전환 기간에만 지원합니다. 새 프로젝트는 플러그인 방식을 쓰세요 (README '도입', ADR-002)."
+echo ""
+
 created() { echo "  + $1"; }
 skipped() { echo "  = $1 (이미 존재, 건너뜀)"; }
 
@@ -48,8 +51,8 @@ done
 echo "[3/6] specs/ (템플릿은 서브모듈 심링크 — 중앙 업데이트 반영)"
 mkdir -p specs/_archive
 if [ -e specs/_templates ] || [ -L specs/_templates ]; then skipped "specs/_templates"; else
-  ln -s "../$SUB/specs/_templates" specs/_templates
-  created "specs/_templates -> ../$SUB/specs/_templates"; fi
+  ln -s "../$SUB/skills/feature/templates" specs/_templates
+  created "specs/_templates -> ../$SUB/skills/feature/templates"; fi
 
 echo "[4/6] .claude/settings.json (훅을 서브모듈 경로로 와이어링)"
 mkdir -p .claude
@@ -63,25 +66,27 @@ if [ -f .claude/settings.json ]; then
     mv .claude/settings.json.tmp .claude/settings.json
     echo "  ~ .claude/settings.json: 훅 명령의 \${CLAUDE_PROJECT_DIR}를 따옴표로 감쌈 (공백 경로 대응)"
   fi
-  skipped ".claude/settings.json — 훅 병합이 필요하면 $SUB/.claude/settings.json의 경로에 '$SUB/'를 붙여 수동 반영"
+  skipped ".claude/settings.json — 훅 병합이 필요하면 $SUB/hooks/hooks.json의 \"\${CLAUDE_PLUGIN_ROOT}\"를 \"\${CLAUDE_PROJECT_DIR}\"/$SUB로 바꿔 수동 반영"
 else
-  sed "s#}\\\\\"/.claude/hooks/#}\\\\\"/$SUB/.claude/hooks/#g" \
-    "$SUB/.claude/settings.json" > .claude/settings.json
+  # 플러그인 훅 정의(hooks/hooks.json)가 원본이다. 플러그인 루트를 서브모듈 경로로 바꾼다.
+  sed 's#\${CLAUDE_PLUGIN_ROOT}\\"/hooks/#${CLAUDE_PROJECT_DIR}\\"/'"$SUB"'/hooks/#g' \
+    "$SUB/hooks/hooks.json" > .claude/settings.json
   created ".claude/settings.json"
 fi
 
 echo "[5/6] 스킬 심링크 (/feature, /handoff, /learn)"
 mkdir -p .claude/skills
-for d in "$SUB"/.claude/skills/*/; do
+for d in "$SUB"/skills/*/; do
   name=$(basename "$d")
+  [ "$name" = setup ] && continue  # 플러그인 전용 스킬 (서브모듈 방식은 bootstrap이 대신한다)
   if [ -e ".claude/skills/$name" ] || [ -L ".claude/skills/$name" ]; then skipped ".claude/skills/$name"; else
-    ln -s "../../$SUB/.claude/skills/$name" ".claude/skills/$name"
-    created ".claude/skills/$name -> ../../$SUB/.claude/skills/$name"; fi
+    ln -s "../../$SUB/skills/$name" ".claude/skills/$name"
+    created ".claude/skills/$name -> ../../$SUB/skills/$name"; fi
 done
 
 echo "[6/6] MCP 등록 · .gitignore"
 if [ -f .mcp.json ]; then skipped ".mcp.json — claude-memory-layer 항목이 있는지 확인하세요"; else
-  cp "$SUB/.mcp.json" .mcp.json; created ".mcp.json"; fi
+  cp "$SUB/scripts/mcp.json" .mcp.json; created ".mcp.json"; fi
 touch .gitignore
 for line in "memory/" ".DS_Store"; do
   if grep -qxF "$line" .gitignore; then skipped ".gitignore: $line"; else

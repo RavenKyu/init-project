@@ -3,6 +3,7 @@
 set -uo pipefail
 . "$(dirname "$0")/lib/common.sh" || exit 0
 command -v jq >/dev/null 2>&1 || exit 0
+hooks_enabled || exit 0
 
 active=$(list_feature_contexts | head -1)
 [ -z "$active" ] && exit 0

@@ -1,9 +1,14 @@
 #!/bin/bash
 # SessionStart: 진행 중 기능의 context.md를 안내하고, 30일 초과 미갱신은 아카이브 검토를 제안.
 # 진행 중 기능 또는 확인된 CML 등록이 있을 때만 안내한다.
+# 플러그인 모드에서는 도입 표식이 있는 프로젝트에 공통 정책(AGENTS.md)을 함께 주입한다.
 set -uo pipefail
 . "$(dirname "$0")/lib/common.sh" || exit 0
 command -v jq >/dev/null 2>&1 || exit 0
+hooks_enabled || exit 0
+
+# additionalContext가 이 길이를 넘으면 Claude Code는 미리보기만 넣는다.
+CONTEXT_LIMIT=10000
 
 lines=""
 while IFS= read -r f; do
@@ -56,6 +61,23 @@ if [ -n "$lines" ]; then
   msg="[ACTIVE FEATURES] 진행 중인 기능 문서:
 ${lines}작업 시작 전 해당 context.md를 읽고, 현재 상태를 한 문단으로 보고한 뒤 AGENTS.md §2.1에 따라 진행하세요.
 ${mem_note}"
+fi
+
+policy=""
+policy_file="${CLAUDE_PLUGIN_ROOT:-}/AGENTS.md"
+if is_plugin_mode && [ -f "$policy_file" ]; then
+  policy="[INIT-PROJECT POLICY] init-project 플러그인이 주입한 공통 운영 정책(원본: $policy_file)이다. 이 프로젝트의 CLAUDE.md·AGENTS.md와 함께 따른다.
+
+$(cat "$policy_file" 2>/dev/null)"
+  pointer="[INIT-PROJECT POLICY] 공통 운영 정책이 세션 주입 한도를 넘어 본문을 생략했다. 작업 전에 $policy_file 을 읽고 따른다."
+  # 한도를 넘으면 본문 대신 원본 경로를 안내한다. 길이는 로케일과 무관하게 jq로 문자 단위로 잰다.
+  if [ "$(jq -n --arg p "$policy" --arg m "$msg" '($p + "\n\n" + $m) | length' 2>/dev/null || echo 0)" -gt "$CONTEXT_LIMIT" ]; then
+    echo "init-project: AGENTS.md가 SessionStart 주입 한도(${CONTEXT_LIMIT}자)를 넘어 경로 안내로 대체했다 (ADR-002 재검토 조건)" >&2
+    policy="$pointer"
+  fi
+  msg="${policy}
+
+${msg}"
 fi
 [ -z "$msg" ] && exit 0
 
